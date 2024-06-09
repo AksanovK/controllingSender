@@ -3,14 +3,16 @@ import os
 import time
 import logging
 import yagmail
+import random
 from kafka import KafkaConsumer
 from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levellevelname)s - %(message)s')
 
-SLEEP_INTERVAL = float(os.getenv('SLEEP_INTERVAL', 2))
+SLEEP_INTERVAL_MIN = float(os.getenv('SLEEP_INTERVAL', 2))
+SLEEP_INTERVAL_MAX = SLEEP_INTERVAL_MIN + 3
 gmail_user = os.getenv('GMAIL_USER')
 gmail_password = os.getenv('GMAIL_PASSWORD')
 yag = yagmail.SMTP(user=gmail_user, password=gmail_password, host='smtp.mail.ru', port=465, smtp_ssl=True)
@@ -21,7 +23,7 @@ def send_gmail(subject, message, emails):
         try:
             address = email["address"]
             yag.send(to=address, subject=subject, contents=message)
-            time.sleep(SLEEP_INTERVAL)
+            time.sleep(random.uniform(SLEEP_INTERVAL_MIN, SLEEP_INTERVAL_MAX))
         except Exception as e:
             logging.error(f"Ошибка при отправке электронной почты {address}: {e}")
 
